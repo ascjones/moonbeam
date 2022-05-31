@@ -142,6 +142,7 @@ where
 	BE::State: StateBackend<BlakeTwo256>,
 	BE::Blockchain: BlockchainBackend<Block>,
 	C: ProvideRuntimeApi<Block> + StorageProvider<Block, BE> + AuxStore,
+	C: sc_client_api::BlockBackend<Block>,
 	C: BlockchainEvents<Block>,
 	C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError> + 'static,
 	C: Send + Sync + 'static,
@@ -261,6 +262,8 @@ where
 			hrmp_message_channel,
 		}));
 	}
+
+	io.extend_with(sc_rpc::dev::DevApi::to_delegate(sc_rpc::dev::Dev::new(client, deny_unsafe)));
 
 	io
 }
